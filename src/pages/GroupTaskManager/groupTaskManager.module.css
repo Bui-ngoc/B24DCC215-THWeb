@@ -1,145 +1,285 @@
-
 /* Container */
 .gtmContainer {
-  max-width: 700px;
-  margin: 40px auto;
-  background: var(--gtm-bg, #f9f9f9);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
-  padding: 32px 28px 28px 28px;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  color: #222;
+	max-width: 700px;
+	margin: 40px auto;
+	padding: 32px 28px 28px 28px;
+	color: #222;
+	font-family: 'Segoe UI', Arial, sans-serif;
+	background: var(--gtm-bg, #f9f9f9);
+	border-radius: 12px;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
 /* Login Form */
 .gtmLoginForm {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-width: 340px;
-  margin: 100px auto 0 auto;
-  background: #fff;
-  padding: 36px 28px 28px 28px;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	max-width: 340px;
+	margin: 100px auto 0 auto;
+	padding: 36px 28px 28px 28px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 }
 .gtmLoginForm input {
-  padding: 10px 12px;
-  border: 1px solid #d0d0d0;
-  border-radius: 5px;
-  font-size: 16px;
+	padding: 10px 12px;
+	font-size: 16px;
+	border: 1px solid #d0d0d0;
+	border-radius: 5px;
 }
 .gtmLoginForm button {
-  padding: 10px 0;
-  background: #1677ff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
+	padding: 10px 0;
+	color: #fff;
+	font-weight: 600;
+	font-size: 16px;
+	background: #1677ff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.2s;
 }
 .gtmLoginForm button:hover {
-  background: #0958d9;
+	background: #0958d9;
 }
 
 /* Table */
 .gtmTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 24px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+	width: 100%;
+	margin-top: 24px;
+	overflow: hidden;
+	background: #fff;
+	border-radius: 8px;
+	border-collapse: collapse;
+	box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
-.gtmTable th, .gtmTable td {
-  border: 1px solid #e5e5e5;
-  padding: 10px 8px;
-  text-align: left;
-  font-size: 15px;
+.gtmTable th,
+.gtmTable td {
+	padding: 10px 8px;
+	font-size: 15px;
+	text-align: left;
+	border: 1px solid #e5e5e5;
 }
 .gtmTable th {
-  background: #f0f4fa;
-  font-weight: 600;
+	font-weight: 600;
+	background: #f0f4fa;
 }
 .gtmTable tr:nth-child(even) td {
-  background: #f9fbfd;
+	background: #f9fbfd;
 }
 
 /* Buttons */
-.gtmAddBtn, .gtmLogoutBtn {
-  margin: 10px 10px 10px 0;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 5px;
-  background: #1677ff;
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  transition: background 0.2s;
+.gtmAddBtn,
+.gtmLogoutBtn {
+	margin: 10px 10px 10px 0;
+	padding: 8px 20px;
+	color: #fff;
+	font-weight: 600;
+	font-size: 15px;
+	background: #1677ff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.2s;
 }
-.gtmAddBtn:hover, .gtmLogoutBtn:hover {
-  background: #0958d9;
+.gtmAddBtn:hover,
+.gtmLogoutBtn:hover {
+	background: #0958d9;
 }
 .gtmTable button {
-  margin-right: 6px;
-  padding: 5px 12px;
-  border: none;
-  border-radius: 4px;
-  background: #e6f0ff;
-  color: #1677ff;
-  font-weight: 500;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s, color 0.2s;
+	margin-right: 6px;
+	padding: 5px 12px;
+	color: #1677ff;
+	font-weight: 500;
+	font-size: 14px;
+	background: #e6f0ff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
 }
 .gtmTable button:hover {
-  background: #1677ff;
-  color: #fff;
+	color: #fff;
+	background: #1677ff;
 }
 
 /* Form inside container */
 .gtmContainer form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 18px;
 }
-.gtmContainer input, .gtmContainer select {
-  padding: 8px 10px;
-  border: 1px solid #d0d0d0;
-  border-radius: 5px;
-  font-size: 15px;
+.gtmContainer input,
+.gtmContainer select {
+	padding: 8px 10px;
+	font-size: 15px;
+	border: 1px solid #d0d0d0;
+	border-radius: 5px;
 }
-.gtmContainer button[type="submit"], .gtmContainer button[type="button"] {
-  padding: 8px 16px;
-  border-radius: 5px;
-  border: none;
-  background: #1677ff;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 15px;
-  margin-left: 4px;
-  transition: background 0.2s;
+.gtmContainer button[type='submit'],
+.gtmContainer button[type='button'] {
+	margin-left: 4px;
+	padding: 8px 16px;
+	color: #fff;
+	font-weight: 600;
+	font-size: 15px;
+	background: #1677ff;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.2s;
 }
-.gtmContainer button[type="submit"]:hover, .gtmContainer button[type="button"]:hover {
-  background: #0958d9;
+.gtmContainer button[type='submit']:hover,
+.gtmContainer button[type='button']:hover {
+	background: #0958d9;
+}
+
+.gtmSummarySection {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.gtmSummaryCard {
+	flex: 1 1 200px;
+	padding: 16px 18px;
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.gtmSummaryLabel {
+	margin-bottom: 8px;
+	color: #555;
+	font-size: 14px;
+}
+
+.gtmSummaryValue {
+	color: #1677ff;
+	font-weight: 700;
+	font-size: 28px;
+}
+
+.gtmSectionTitle {
+	margin: 18px 0 10px;
+	color: #333;
+	font-weight: 700;
+	font-size: 18px;
+}
+
+.gtmCalendarSection {
+	margin-bottom: 24px;
+}
+
+.gtmCalendarHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.gtmCalendarTitle {
+	font-weight: 700;
+	font-size: 16px;
+}
+
+.gtmCalendarGrid {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 6px;
+}
+
+.gtmCalendarWeekday,
+.gtmCalendarCell {
+	min-height: 84px;
+	padding: 8px;
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+}
+
+.gtmCalendarWeekday {
+	font-weight: 700;
+	font-size: 13px;
+	text-align: center;
+	background: #f0f4fa;
+}
+
+.gtmCalendarCell {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	overflow: hidden;
+}
+
+.gtmCalendarDayNumber {
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.gtmCalendarTasks {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	overflow: hidden;
+}
+
+.gtmCalendarTaskItem {
+	padding: 4px 6px;
+	overflow: hidden;
+	color: #1d4ed8;
+	font-size: 12px;
+	line-height: 1.3;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	background: #eff6ff;
+	border-radius: 6px;
+}
+
+.gtmCalendarEmpty {
+	color: #a1a1aa;
+	font-size: 12px;
+}
+
+.gtmFilterSection {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	margin: 22px 0 12px;
+}
+
+.gtmSearchInput,
+.gtmFilterSelect {
+	min-width: 200px;
+	padding: 10px 12px;
+	font-size: 14px;
+	border: 1px solid #d0d0d0;
+	border-radius: 6px;
+}
+
+.gtmSearchInput {
+	flex: 1;
+}
+
+.gtmFilterSelect {
+	max-width: 220px;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
-  .gtmContainer {
-    padding: 10px 2vw;
-  }
-  .gtmLoginForm {
-    padding: 18px 4vw;
-  }
-  .gtmTable th, .gtmTable td {
-    font-size: 13px;
-    padding: 6px 4px;
-  }
+	.gtmContainer {
+		padding: 10px 2vw;
+	}
+	.gtmLoginForm {
+		padding: 18px 4vw;
+	}
+	.gtmTable th,
+	.gtmTable td {
+		padding: 6px 4px;
+		font-size: 13px;
+	}
 }

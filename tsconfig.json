@@ -1,15 +1,16 @@
 {
 	"compilerOptions": {
 		"outDir": "build/dist",
-		"module": "esnext",
+		"module": "Node16",
 		"target": "esnext",
 		"lib": ["esnext", "dom"],
 		"sourceMap": true,
+		"ignoreDeprecations": "6.0",
 		"baseUrl": ".",
 		"jsx": "react-jsx",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
-		"moduleResolution": "node",
+		"moduleResolution": "Node16",
 		"forceConsistentCasingInFileNames": true,
 		"noImplicitReturns": true,
 		"noUnusedLocals": true,
