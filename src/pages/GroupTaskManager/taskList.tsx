@@ -17,6 +17,7 @@ const TaskList: React.FC = () => {
 	const [filterStatus, setFilterStatus] = useState<Status | ''>('');
 	const [filterAssignee, setFilterAssignee] = useState('');
 	const [showMyTasks, setShowMyTasks] = useState(false);
+	const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
 	useEffect(() => {
 		const u = localStorage.getItem(USER_KEY);
@@ -82,8 +83,50 @@ const TaskList: React.FC = () => {
 
 	const totalCount = filteredTasks.length;
 	const doneCount = filteredTasks.filter((task) => task.status === 'Đã xong').length;
+	const allTasksCount = tasks.length;
+	const allDoneCount = tasks.filter((task) => task.status === 'Đã xong').length;
+	const myTasksCount = user ? tasks.filter((task) => task.assignee === user).length : 0;
 
-	console.log('TaskList render:', { user, tasks: tasks.length, filteredTasks: filteredTasks.length, searchName, filterStatus, filterAssignee, showMyTasks });
+	const weekdayLabels = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+	const calendarDays = useMemo(() => {
+		const start = new Date();
+		start.setHours(0, 0, 0, 0);
+		return Array.from({ length: 28 }, (_, index) => {
+			const day = new Date(start);
+			day.setDate(start.getDate() + index);
+			return day;
+		});
+	}, []);
+
+	const tasksByDeadline = useMemo(() => {
+		return filteredTasks.reduce((acc, task) => {
+			const key = task.deadline;
+			if (!key) return acc;
+			const date = new Date(key);
+			if (Number.isNaN(date.getTime())) return acc;
+			const dateKey = date.toISOString().slice(0, 10);
+			acc[dateKey] = [...(acc[dateKey] || []), task];
+			return acc;
+		}, {} as Record<string, Task[]>);
+	}, [filteredTasks]);
+
+	const extraTasks = useMemo(() => {
+		const visibleDates = new Set(calendarDays.map((date) => date.toISOString().slice(0, 10)));
+		return filteredTasks.filter((task) => !visibleDates.has(task.deadline));
+	}, [filteredTasks, calendarDays]);
+
+	const formatDateKey = (date: Date) => date.toISOString().slice(0, 10);
+
+	console.log('TaskList render:', {
+		user,
+		tasks: tasks.length,
+		filteredTasks: filteredTasks.length,
+		searchName,
+		filterStatus,
+		filterAssignee,
+		showMyTasks,
+		viewMode,
+	});
 
 	if (!user) {
 		// Nếu mất user, reload lại trang để về login
@@ -98,18 +141,39 @@ const TaskList: React.FC = () => {
 			</button>
 			<h2>Danh sách công việc</h2>
 			<div className={styles.gtmToolbar}>
-				<button
-					className={styles.gtmAddBtn}
-					onClick={() => {
-						setShowForm(true);
-						setEditing(null);
-					}}
-				>
-					Thêm công việc
-				</button>
-				<div className={styles.gtmStats}>
-					<span>Tổng: {totalCount}</span>
-					<span>Đã hoàn thành: {doneCount}</span>
+				<div className={styles.gtmToolbarLeft}>
+					<button
+						className={styles.gtmAddBtn}
+						onClick={() => {
+							setShowForm(true);
+							setEditing(null);
+						}}
+					>
+						Thêm công việc
+					</button>
+					<div className={styles.gtmViewMode}>
+						<button
+							type='button'
+							onClick={() => setViewMode('list')}
+							className={viewMode === 'list' ? styles.activeViewBtn : ''}
+						>
+							Xem danh sách
+						</button>
+						<button
+							type='button'
+							onClick={() => setViewMode('calendar')}
+							className={viewMode === 'calendar' ? styles.activeViewBtn : ''}
+						>
+							Xem lịch
+						</button>
+					</div>
+				</div>
+				<div className={styles.gtmOverview}>
+					<div>Tổng công việc: {allTasksCount}</div>
+					<div>Đã hoàn thành: {allDoneCount}</div>
+					<div>Của tôi: {myTasksCount}</div>
+					<div>Đang xem: {totalCount}</div>
+					<div>Hoàn thành đang xem: {doneCount}</div>
 				</div>
 			</div>
 			{showForm && (
@@ -122,7 +186,10 @@ const TaskList: React.FC = () => {
 					}}
 				/>
 			)}
-			<div className={styles.gtmFilters} style={{ border: '2px solid red', padding: '10px', margin: '10px 0', backgroundColor: '#ffebee' }}>
+			<div
+				className={styles.gtmFilters}
+				style={{ border: '2px solid red', padding: '10px', margin: '10px 0', backgroundColor: '#ffebee' }}
+			>
 				<input
 					value={searchName}
 					onChange={(e) => setSearchName(e.target.value)}
@@ -147,30 +214,70 @@ const TaskList: React.FC = () => {
 					Công việc của tôi
 				</label>
 			</div>
-			<table className={styles.gtmTable}>
-				<thead>
-					<tr>
-						<th>Tên công việc</th>
-						<th>Người được giao</th>
-						<th>Mức độ ưu tiên</th>
-						<th>Deadline</th>
-						<th>Trạng thái</th>
-						<th>Hành động</th>
-					</tr>
-				</thead>
-				<tbody>
-					{filteredTasks.map((task) => (
-						<TaskItem
-							key={task.id}
-							task={task}
-							currentUser={user}
-							onEdit={handleEdit}
-							onDelete={handleDelete}
-							onAssignSelf={handleAssignSelf}
-						/>
-					))}
-				</tbody>
-			</table>
+			{viewMode === 'calendar' ? (
+				<div className={styles.gtmCalendar}>
+					<div className={styles.gtmCalendarHead}>
+						{weekdayLabels.map((day) => (
+							<div key={day}>{day}</div>
+						))}
+					</div>
+					<div className={styles.gtmCalendarBody}>
+						{calendarDays.map((date) => {
+							const dateKey = formatDateKey(date);
+							const tasksForDay = tasksByDeadline[dateKey] || [];
+							return (
+								<div key={dateKey} className={styles.gtmCalendarCell}>
+									<div className={styles.gtmCalendarCellDate}>{date.getDate()}</div>
+									{tasksForDay.map((task) => (
+										<div key={task.id} className={styles.gtmCalendarTask}>
+											<div>{task.name}</div>
+											<div>{task.assignee}</div>
+										</div>
+									))}
+								</div>
+							);
+						})}
+					</div>
+					{extraTasks.length > 0 && (
+						<div className={styles.gtmCalendarExtra}>
+							<h4>Các công việc ngoài 28 ngày tới</h4>
+							{extraTasks.map((task) => (
+								<div key={task.id} className={styles.gtmCalendarTask}>
+									<div>{task.deadline}</div>
+									<div>
+										{task.name} - {task.assignee}
+									</div>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			) : (
+				<table className={styles.gtmTable}>
+					<thead>
+						<tr>
+							<th>Tên công việc</th>
+							<th>Người được giao</th>
+							<th>Mức độ ưu tiên</th>
+							<th>Deadline</th>
+							<th>Trạng thái</th>
+							<th>Hành động</th>
+						</tr>
+					</thead>
+					<tbody>
+						{filteredTasks.map((task) => (
+							<TaskItem
+								key={task.id}
+								task={task}
+								currentUser={user}
+								onEdit={handleEdit}
+								onDelete={handleDelete}
+								onAssignSelf={handleAssignSelf}
+							/>
+						))}
+					</tbody>
+				</table>
+			)}
 		</div>
 	);
 };

@@ -144,6 +144,46 @@
 	margin-bottom: 18px;
 }
 
+.gtmToolbarLeft {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+}
+
+.gtmViewMode {
+	display: flex;
+	gap: 8px;
+}
+
+.gtmViewMode button {
+	padding: 8px 14px;
+	color: #1677ff;
+	background: transparent;
+	border: 1px solid #1677ff;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+
+.activeViewBtn,
+.gtmViewMode button:hover {
+	color: #fff;
+	background: #1677ff;
+}
+
+.gtmOverview {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 16px;
+	padding: 12px 14px;
+	color: #1a3d7c;
+	font-size: 14px;
+	background: #eef5ff;
+	border-radius: 10px;
+}
+
 .gtmStats {
 	display: flex;
 	gap: 14px;
@@ -162,6 +202,77 @@
 .gtmFilters input,
 .gtmFilters select {
 	min-width: 160px;
+}
+
+.gtmCalendar {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 14px;
+	background: #fff;
+	border-radius: 10px;
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.08);
+}
+
+.gtmCalendarHead,
+.gtmCalendarBody {
+	display: grid;
+	grid-template-columns: repeat(7, minmax(0, 1fr));
+	gap: 6px;
+}
+
+.gtmCalendarHead div,
+.gtmCalendarCell {
+	padding: 8px 6px;
+	text-align: center;
+	border-radius: 8px;
+}
+
+.gtmCalendarHead div {
+	color: #1c3b7a;
+	font-weight: 700;
+	background: #e8efff;
+}
+
+.gtmCalendarCell {
+	min-height: 90px;
+	background: #f7f9ff;
+	border: 1px solid #e1e7ff;
+}
+
+.gtmCalendarCellDate {
+	margin-bottom: 6px;
+	font-weight: 700;
+}
+
+.gtmCalendarTask {
+	margin-bottom: 6px;
+	padding: 6px 8px;
+	font-size: 13px;
+	text-align: left;
+	background: #ffffff;
+	border: 1px solid #d7e0ff;
+	border-radius: 8px;
+}
+
+.gtmCalendarTask div {
+	line-height: 1.2;
+}
+
+.gtmCalendarExtra {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px;
+	background: #fff7e8;
+	border: 1px solid #ffe3b8;
+	border-radius: 10px;
+}
+
+.gtmCalendarExtra h4 {
+	margin: 0;
+	color: #924d00;
+	font-size: 15px;
 }
 
 .gtmFilterCheckbox {
