@@ -50,6 +50,12 @@
 	// 		},
 	// 	],
 	// },
+   {
+			path: '/group-task',
+			name: 'Quản lý Công việc Nhóm',
+			component: './GroupTaskManager',
+			icon: 'TeamOutlined',
+		},
 
 	{
 		path: '/notification',
