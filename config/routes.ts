@@ -50,12 +50,21 @@
 	// 		},
 	// 	],
 	// },
+   // TH07
    {
 			path: '/group-task',
 			name: 'Quản lý Công việc Nhóm',
 			component: './GroupTaskManager',
 			icon: 'TeamOutlined',
 		},
+
+   // TH08
+   {
+		path: '/blog',
+		name: 'Blog',
+		component: './QuanLyBlog/Home',
+		icon: 'ReadOutlined',
+	},
 
 	{
 		path: '/notification',
