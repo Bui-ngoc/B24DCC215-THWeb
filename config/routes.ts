@@ -26,9 +26,9 @@
 	},
 	{
 		path: '/gioi-thieu',
-		name: 'About',
+		name: 'Giới Thiệu',
 		component: './TienIch/GioiThieu',
-		hideInMenu: true,
+		icon: 'UserOutlined',
 	},
 	{
 		path: '/random-user',
@@ -50,20 +50,25 @@
 	// 		},
 	// 	],
 	// },
-   // TH07
-   {
-			path: '/group-task',
-			name: 'Quản lý Công việc Nhóm',
-			component: './GroupTaskManager',
-			icon: 'TeamOutlined',
-		},
+	// TH07
+	{
+		path: '/group-task',
+		name: 'Quản lý Công việc Nhóm',
+		component: './GroupTaskManager',
+		icon: 'TeamOutlined',
+	},
 
-   // TH08
-   {
+	// TH08
+	{
 		path: '/blog',
 		name: 'Blog',
 		component: './QuanLyBlog/Home',
 		icon: 'ReadOutlined',
+	},
+	{
+		path: '/blog/:id',
+		component: './QuanLyBlog/Detail',
+		hideInMenu: true,
 	},
 
 	{
