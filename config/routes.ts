@@ -26,9 +26,8 @@
 	},
 	{
 		path: '/gioi-thieu',
-		name: 'Giới Thiệu',
-		component: './TienIch/GioiThieu',
-		icon: 'UserOutlined',
+		redirect: '/blog/gioi-thieu',
+		hideInMenu: true,
 	},
 	{
 		path: '/random-user',
@@ -61,14 +60,40 @@
 	// TH08
 	{
 		path: '/blog',
-		name: 'Blog',
-		component: './QuanLyBlog/Home',
+		name: 'Blog Cá Nhân',
 		icon: 'ReadOutlined',
-	},
-	{
-		path: '/blog/:id',
-		component: './QuanLyBlog/Detail',
-		hideInMenu: true,
+		routes: [
+			{
+				path: '/blog',
+				name: 'Trang chủ Blog',
+				component: './QuanLyBlog/Home',
+				exact: true,
+			},
+			{
+				path: '/blog/gioi-thieu',
+				name: 'Giới thiệu',
+				component: './TienIch/GioiThieu',
+				exact: true,
+			},
+			{
+				path: '/blog/manage',
+				name: 'Quản lý bài viết',
+				component: './QuanLyBlog/ManagePosts',
+				exact: true,
+			},
+			{
+				path: '/blog/tags',
+				name: 'Quản lý thẻ',
+				component: './QuanLyBlog/ManageTags',
+				exact: true,
+			},
+			{
+				path: '/blog/:id',
+				component: './QuanLyBlog/Detail',
+				hideInMenu: true,
+				exact: true,
+			},
+		],
 	},
 
 	{
