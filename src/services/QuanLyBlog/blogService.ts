@@ -54,6 +54,41 @@ const getLocalTags = (): Blog.Tag[] => {
   return data ? JSON.parse(data) : [];
 };
 
+const saveLocalPosts = (posts: Blog.Post[]) => {
+  localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(posts));
+};
+
+const saveLocalTags = (tags: Blog.Tag[]) => {
+  localStorage.setItem(STORAGE_KEY_TAGS, JSON.stringify(tags));
+};
+
+const computeTagUsage = (posts: Blog.Post[], tags: Blog.Tag[]): Blog.Tag[] => {
+  return tags.map((tag) => ({
+    ...tag,
+    usageCount: posts.filter((post) => post.tags.some((t) => t.id === tag.id)).length,
+  }));
+};
+
+const syncTagUsage = (posts: Blog.Post[]) => {
+  const tags = getLocalTags();
+  const updatedTags = computeTagUsage(posts, tags);
+  saveLocalTags(updatedTags);
+  return updatedTags;
+};
+
+const getNextPostId = (posts: Blog.Post[]): string => {
+  const maxId = posts.reduce((max, post) => {
+    const current = Number(post.id);
+    return Number.isNaN(current) ? max : Math.max(max, current);
+  }, 0);
+  return String(maxId + 1);
+};
+
+const mapTagIdsToTags = (tagIds: string[]): Blog.Tag[] => {
+  const tags = getLocalTags();
+  return tags.filter((tag) => tagIds.includes(tag.id));
+};
+
 export const getPosts = async (params: Blog.PostListParams): Promise<Blog.PostListResponse> => {
 
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -91,6 +126,181 @@ export const getTags = async (): Promise<{ data: Blog.Tag[]; success: boolean }>
     data: getLocalTags(),
     success: true,
   };
+};
+
+export const getAdminPosts = async (params: Blog.PostListParams): Promise<Blog.PostListResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+
+  let allPosts = getLocalPosts();
+
+  if (params.keyword) {
+    const keyword = params.keyword.toLowerCase();
+    allPosts = allPosts.filter(
+      (post) => post.title.toLowerCase().includes(keyword) || post.summary.toLowerCase().includes(keyword)
+    );
+  }
+
+  if (params.status) {
+    allPosts = allPosts.filter((post) => post.status === params.status);
+  }
+
+  if (params.tagId) {
+    allPosts = allPosts.filter((post) => post.tags.some((tag) => tag.id === params.tagId));
+  }
+
+  allPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  const current = params.current || 1;
+  const pageSize = params.pageSize || 10;
+  const start = (current - 1) * pageSize;
+  const end = start + pageSize;
+
+  return {
+    data: allPosts.slice(start, end),
+    total: allPosts.length,
+    success: true,
+  };
+};
+
+export const getAdminTags = async (): Promise<{ data: Blog.Tag[]; success: boolean }> => {
+  await new Promise((resolve) => setTimeout(resolve, 200));
+  const posts = getLocalPosts();
+  const tags = computeTagUsage(posts, getLocalTags());
+  saveLocalTags(tags);
+  return {
+    data: tags,
+    success: true,
+  };
+};
+
+export const createPost = async (payload: Blog.PostUpsertPayload): Promise<{ data: Blog.Post; success: boolean }> => {
+  const posts = getLocalPosts();
+  const now = new Date().toISOString();
+
+  const newPost: Blog.Post = {
+    id: getNextPostId(posts),
+    title: payload.title,
+    slug: payload.slug,
+    summary: payload.summary,
+    content: payload.content,
+    thumbnail: payload.thumbnail,
+    status: payload.status,
+    tags: mapTagIdsToTags(payload.tagIds),
+    viewCount: 0,
+    createdAt: now,
+    updatedAt: now,
+    author: mockAuthor,
+  };
+
+  const updatedPosts = [newPost, ...posts];
+  saveLocalPosts(updatedPosts);
+  syncTagUsage(updatedPosts);
+
+  return { data: newPost, success: true };
+};
+
+export const updatePost = async (
+  id: string,
+  payload: Blog.PostUpsertPayload,
+): Promise<{ data: Blog.Post | null; success: boolean }> => {
+  const posts = getLocalPosts();
+  const index = posts.findIndex((post) => post.id === id);
+
+  if (index === -1) {
+    return { data: null, success: false };
+  }
+
+  const now = new Date().toISOString();
+  const updatedPost: Blog.Post = {
+    ...posts[index],
+    title: payload.title,
+    slug: payload.slug,
+    summary: payload.summary,
+    content: payload.content,
+    thumbnail: payload.thumbnail,
+    status: payload.status,
+    tags: mapTagIdsToTags(payload.tagIds),
+    updatedAt: now,
+  };
+
+  const updatedPosts = [...posts];
+  updatedPosts[index] = updatedPost;
+  saveLocalPosts(updatedPosts);
+  syncTagUsage(updatedPosts);
+
+  return { data: updatedPost, success: true };
+};
+
+export const deletePost = async (id: string): Promise<{ success: boolean }> => {
+  const posts = getLocalPosts();
+  const updatedPosts = posts.filter((post) => post.id !== id);
+  saveLocalPosts(updatedPosts);
+  syncTagUsage(updatedPosts);
+  return { success: true };
+};
+
+export const createTag = async (payload: Blog.TagUpsertPayload): Promise<{ data: Blog.Tag; success: boolean }> => {
+  const tags = getLocalTags();
+  const posts = getLocalPosts();
+  const maxId = tags.reduce((max, tag) => Math.max(max, Number(tag.id) || 0), 0);
+  const newTag: Blog.Tag = {
+    id: String(maxId + 1),
+    name: payload.name,
+    color: payload.color,
+  };
+
+  const updatedTags = computeTagUsage(posts, [newTag, ...tags]);
+  saveLocalTags(updatedTags);
+
+  return { data: newTag, success: true };
+};
+
+export const updateTag = async (
+  id: string,
+  payload: Blog.TagUpsertPayload,
+): Promise<{ data: Blog.Tag | null; success: boolean }> => {
+  const tags = getLocalTags();
+  const posts = getLocalPosts();
+  const index = tags.findIndex((tag) => tag.id === id);
+
+  if (index === -1) {
+    return { data: null, success: false };
+  }
+
+  const updatedTag: Blog.Tag = {
+    ...tags[index],
+    name: payload.name,
+    color: payload.color,
+  };
+
+  const updatedTags = [...tags];
+  updatedTags[index] = updatedTag;
+
+  const updatedPosts = posts.map((post) => ({
+    ...post,
+    tags: post.tags.map((tag) => (tag.id === id ? updatedTag : tag)),
+  }));
+
+  saveLocalPosts(updatedPosts);
+  saveLocalTags(computeTagUsage(updatedPosts, updatedTags));
+
+  return { data: updatedTag, success: true };
+};
+
+export const deleteTag = async (id: string): Promise<{ success: boolean }> => {
+  const tags = getLocalTags();
+  const posts = getLocalPosts();
+
+  const updatedTags = tags.filter((tag) => tag.id !== id);
+  const updatedPosts = posts.map((post) => ({
+    ...post,
+    tags: post.tags.filter((tag) => tag.id !== id),
+  }));
+
+  saveLocalPosts(updatedPosts);
+  saveLocalTags(computeTagUsage(updatedPosts, updatedTags));
+
+  return { success: true };
 };
 
 export const getPostById = async (id: string): Promise<{ data: Blog.Post | null; success: boolean }> => {

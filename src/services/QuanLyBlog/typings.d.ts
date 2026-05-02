@@ -34,6 +34,21 @@ declare namespace Blog {
     author: Author;
   }
 
+  interface PostUpsertPayload {
+    title: string;
+    slug: string;
+    summary: string;
+    content: string;
+    thumbnail: string;
+    status: 'DRAFT' | 'PUBLISHED';
+    tagIds: string[];
+  }
+
+  interface TagUpsertPayload {
+    name: string;
+    color?: string;
+  }
+
   interface PostListParams {
     current?: number;
     pageSize?: number;
